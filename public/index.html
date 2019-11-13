@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -7,16 +7,26 @@
     <link href="./css/styles.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1> List of students </h1>
-	<p>test</p>
-	<canvas id="ItemPrev" width="1600", height="900"> </canvas>
-    <ul id="studentList">
-    </ul>
+      <h1> AJAX Laboratory</h1>
+      <form id="postLists">
+          <div class="additm">
+              <div class="titleForm"> Add an item </div>
+              <div><label for="additemtitle">Title </label><input id="additemtitle" /></div>
+              <div><label for="additemcontent">Content </label><textarea name="textarea" id="additemcontent" style="width:250px;height:150px;"></textarea></div>
+              <div><label for="additemauthor">Author </label><input id="additemauthor" /></div>
+              <div><label for="additempbdateday">day </label><input id="additempbdateday" class="newDate" /><label for="additempbdatemonth"> month </label><input id="additempbdatemonth" class="newDate" /><label for="additempbdateyear"> year </label><input id="additempbdateyear" class="newDate" /></div>
+              <button type="submit" id="submt">Submit</button>
+          </div>
+      </form>
+      <div id="status"></div>
+      <button id="checkuser">CheckUser</button>
+      <div id="checkuserlist">this user is </div>
+      <button id="logout">Logout</button>
+      <div id="logoutdiv">logout </div>
+      <script src="https://code.jquery.com/jquery-3.4.1.js"
+              integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+              crossorigin="anonymous"></script>
+      <script src="./js/script.js"></script>
 
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.js"
-      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-      crossorigin="anonymous"></script>
-    <script src="./js/script.js"></script>
   </body>
 </html>

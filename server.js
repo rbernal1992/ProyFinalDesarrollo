@@ -1,4 +1,4 @@
-
+let cookieParser = require('cookie-parser');
 let express = require( "express" );
 let morgan = require( "morgan" );
 let mongoose = require( "mongoose" );
@@ -8,6 +8,9 @@ let uuid = require('uuid/v4');
 let fs = require('fs');
 let { UserList } = require('./model');
 let { SolutionList } = require('./model');
+let passport = require('passport');
+let session = require('express-session');
+const User = require('./UserModel');
 const { DATABASE_URL, PORT } = require('./config');
 
 
@@ -15,10 +18,31 @@ let app = express();
 let jsonParser = bodyParser.json();
 mongoose.Promise = global.Promise;
 
+require('./passportconfig')(passport);
+
 app.use( express.static( "public" ) );
 
 app.use( morgan( "dev" ) );
+app.use(
+	session({
+			secret: 'secret',
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+            secure: false
+        },
+        resave: true,
+        saveUninitialized: false,
+        genid: function (req) { return uuid(); }
+ 
 
+	})
+
+);
+app.use(cookieParser());
+
+app.use(passport.initialize());
+app.use(passport.session());
+var sess;
 let usersaux= [];
 
 app.get( "/api/userslist", ( req, res, next ) => {
@@ -33,38 +57,55 @@ app.get( "/api/userslist", ( req, res, next ) => {
 		})
 		.catch( error => {
 			res.statusMessage = "Something went wrong with the DB. Try again later.";
-			return res.status( 500 ).json({
-				status : 500,
-				message : "Something went wrong with the DB. Try again later."
-			})
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
 		});
 });
+app.get('/api/checksession', function (req, res, next) {
+    //if (req.session.views) {
+      //  req.session.views++
+    //res.setHeader('Content-Type', 'text/html');
+    //res.write('<p>views: ' + req.session.username + '</p>');
+    //res.write('<p>expires in: ' + (req.session.cookie.maxAge / 1000) + 's</p>');
+    //res.end();
+    if (req.session.username)
+        return res.status(200).json(req.session.username);
+    else
+        return res.status(200).json('none');
+    //} else {
+     //   req.session.views = 1
+       // res.end('welcome to the session demo. refresh!')
+   // }
+});
+
 
 app.post( "/api/postuser", jsonParser, ( req, res, next ) => {
 	let username = req.body.username;
-	let passwd  = req.body.passwd;
+    let password = req.body.password;
 	let country = req.body.country;
 	let business = req.body.business;
 	let lldate = req.body.lldate;
     var level = 0;
 	//var Solution = {};
-	let newUser = {
-		username,
-		passwd,
-		level,
-		lldate,
-		country,
-		business
-		//Solution
-	}
+    let newUser = {
+        username,
+        password,
+        level,
+        lldate,
+        country,
+        business
+        //Solution
+    };
 	var i;
 			for(i in usersaux)
 			{
-				if(newUser.username == usersaux[i].username)
-					return res.status( 400 ).json({
-							status : 400,
-							message : "User name already exists"
-						})
+                if (newUser.username === usersaux[i].username)
+                    return res.status(400).json({
+                        status: 400,
+                        message: "User name already exists"
+                    });
 				
 			}
 	UserList.post(newUser)
@@ -78,99 +119,87 @@ app.post( "/api/postuser", jsonParser, ( req, res, next ) => {
 		})
 		.catch( error => {
 			res.statusMessage = "Something went wrong with the DB. Try again later.";
-			return res.status( 500 ).json({
-				status : 500,
-				message : "Something went wrong with the DB. Try again later."
-			})
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
 		});
-	/*
-	if ( ! name || ! id ){
-		res.statusMessage = "Missing field in body!";
-		return res.status( 406 ).json({
-			message : "Missing field in body!",
-			status : 406
-		});
-	}
-
-	for( let i = 0; i < students.length; i ++ ){
-		if ( id == students[i].id ){
-			res.statusMessage = "Repeated identifier, cannot add to the list.";
-
-			return res.status( 409 ).json({
-				message : "Repeated identifier, cannot add to the list.",
-				status : 409
-			});
-		}
-	}
-
-	let newStudent = {
-		id : id,
-		name : name
-	};
-
-	students.push( newStudent );
-
-	return res.status( 201 ).json({
-		message : "Student added to the list",
-		status : 201,
-		student : newStudent
-	});
-	*/
+	
 
 });
 
 app.get( "/api/getUser", jsonParser,( req, res, next ) =>{
 	let username = req.body.username;
-	let passwd  = req.body.passwd;
+    let password = req.body.password;
 
-	UserList.getuser(username, passwd)
+    UserList.getuser(username, password)
 		.then( user => {
 			return res.status( 200 ).json( user );
 		})
 		.catch( error => {
 			res.statusMessage = "Something went wrong with the DB. Try again later.";
-			return res.status( 500 ).json({
-				status : 500,
-				message : "Something went wrong with the DB. Try again later."
-			})
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
 		});
 	
-	
-	// if ( !id ){
-		// res.statusMessage = "Missing 'id' field in params!";
-		// return res.status( 406 ).json({
-			// message : "Missing 'id' field in params!",
-			// status : 406
-		// });
-	// }
 
-	// for( let i = 0; i < students.length; i ++ ){
-		// if ( id == students[i].id ){
-			// return res.status( 202 ).json({
-				// message : "Student found in the list",
-				// status : 202,
-				// student : students[i]
-			// });
-		// }
-	// }
-
-	// res.statusMessage = "Student not found in the list.";
-
-	// return res.status( 404 ).json({
-		// message : "Student not found in the list.",
-		// status : 404
-	// });
 
 });
 
 
+//login
+app.post('/api/login', (req, res, next) => {
+ 
+    passport.authenticate('local', function (err, username, info) {
+        //onsole.log('here xx');
+
+        //var token;
+        if (err) {
+            console.log(err);
+            return res.status(401).json(err);
+        }
+        // If a user is found
+        if (username) {
+            console.log('here');
+            sess = req.session;
+            sess.username = username.username;
+          //  res.setHeader('Content-Type', 'text/html');
+           // res.write('<p>username: ' + sess.username+'</p>');
+            //res.end('done');
+          //  token = user.generateJwt();
+           return res.status(200).json(
+                username
+            //    "token": token
+            );
+        } else {
+            // If user is not found
+            res.status(401).json(info);
+        }
+    })(req, res, next);
+	
+	
+});
+
+//logout
+app.get('/api/logout', (req, res, next) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return console.log(err);
+        }
+        
+        return res.status(200).json(sess.username); 
+    });
+
+});
 app.put( "/api/updateUser/:username",jsonParser, ( req, res, next ) =>{
 	let username = req.params.username;
 	let usernamebdy = req.body.username;
-	let passwd  = req.body.passwd;
+    let password = req.body.password;
 	let country = req.body.country;
 	let business = req.body.business;
-	var element = {username: usernamebdy, passwd: passwd, country: country, business: business};
+    var element = { username: usernamebdy, password: password, country: country, business: business};
 	
 	UserList.put(username, element )
 		.then( user => {
@@ -178,10 +207,10 @@ app.put( "/api/updateUser/:username",jsonParser, ( req, res, next ) =>{
 		})
 		.catch( error => {
 			res.statusMessage = "Something went wrong with the DB. Try again later.";
-			return res.status( 500 ).json({
-				status : 500,
-				message : "Something went wrong with the DB. Try again later."
-			})
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
 		});
 });
 
@@ -203,20 +232,20 @@ app.post("/api/createSolution",jsonParser, (req,res,next) => {
 	
 	Images.data = fs.readFileSync(imgpath);
 	Images.contentType = 'image/png';
-	var imgcontType
+    var imgcontType;
 	
-	let newSolution = {
-		title,
-		author,
-		description,
-		grade,
-		gradenum,
-		counteraccess,
-		lastuseraccess,
-		id,
-		Images
-		
-	}
+    let newSolution = {
+        title,
+        author,
+        description,
+        grade,
+        gradenum,
+        counteraccess,
+        lastuseraccess,
+        id,
+        Images
+
+    };
 	SolutionList.post(newSolution)
 		.then( solution => {
 			
@@ -228,10 +257,10 @@ app.post("/api/createSolution",jsonParser, (req,res,next) => {
 		})
 		.catch( error => {
 			res.statusMessage = "Something went wrong with the DB. Try again later.";
-			return res.status( 500 ).json({
-				status : 500,
-				message : "Something went wrong with the DB. Try again later."
-			})
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
 		});
 	
 	
@@ -244,10 +273,10 @@ app.get( "/api/solutionslist", ( req, res, next ) => {
 		})
 		.catch( error => {
 			res.statusMessage = "Something went wrong with the DB. Try again later.";
-			return res.status( 500 ).json({
-				status : 500,
-				message : "Something went wrong with the DB. Try again later."
-			})
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
 		});
 });
 
@@ -262,10 +291,10 @@ app.get( "/api/getSolution", jsonParser,( req, res, next ) =>{
 		})
 		.catch( error => {
 			res.statusMessage = "Something went wrong with the DB. Try again later.";
-			return res.status( 500 ).json({
-				status : 500,
-				message : "Something went wrong with the DB. Try again later."
-			})
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
 		});
 });
 
@@ -278,7 +307,6 @@ app.put( "/api/updateSolution/:id",jsonParser, ( req, res, next ) =>{
 	let gradenum = req.body.gradenum;
 	let counteraccess = req.body.counteraccess;
 	let lastuseraccess = req.body.lastuseraccess;
-	let 
 	var element = {title: title, author: author, description: description, grade: grade, gradenum: gradenum, counteraccess: counteraccess, lastuseraccess: lastuseraccess};
 	
 	SolutionList.put(id, element )
@@ -287,10 +315,10 @@ app.put( "/api/updateSolution/:id",jsonParser, ( req, res, next ) =>{
 		})
 		.catch( error => {
 			res.statusMessage = "Something went wrong with the DB. Try again later.";
-			return res.status( 500 ).json({
-				status : 500,
-				message : "Something went wrong with the DB. Try again later."
-			})
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
 		});
 });
 
@@ -305,10 +333,10 @@ app.get( "/api/getSolutionAuthor", ( req, res, next ) =>{
 		})
 		.catch( error => {
 			res.statusMessage = "Something went wrong with the DB. Try again later.";
-			return res.status( 500 ).json({
-				status : 500,
-				message : "Something went wrong with the DB. Try again later."
-			})
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
 		});
 });
 
@@ -321,10 +349,10 @@ app.delete( "/api/deleteSolution",( req, res, next ) =>{
 		})
 		.catch( error => {
 			res.statusMessage = "Something went wrong with the DB. Try again later.";
-			return res.status( 500 ).json({
-				status : 500,
-				message : "Something went wrong with the DB. Try again later."
-			})
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
 		});
 });
 
@@ -344,7 +372,7 @@ function runServer(port, databaseUrl){
 				.on( 'error', err => {
 					mongoose.disconnect();
 					return reject(err);
-				})
+				});
 			}
 		});
 	});

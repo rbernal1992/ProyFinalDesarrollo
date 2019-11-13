@@ -2,7 +2,7 @@
 
 function init(){
 	//Esto necesitas para desplegar la imagen obtenida desde el elemento image.data de la colección soluciones
-"use strict";
+/*"use strict";
  var ItemPrev = document.getElementById("ItemPrev");
  var ctx = ItemPrev.getContext("2d");
 var uInt8Array = data;
@@ -20,30 +20,96 @@ img.onload = function(){
 	console.log("Image Onload");
 	ctx.drawImage(img, 33, 71, 500,300);
 	
-}
+}*/
 //esto no
- fetch('/api/students')
-		.then( response => {
+    $('#submt').on("click", function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: "http://localhost:8080/api/login?" + "username=" + $('#additemtitle').val() + "&password=" + $('#additemcontent').val(),
+            method: "POST",
+            dataType: "json",
+            xhrFields: {
+                withCredentials: true
+            },
+            contentType: "application/json",
+            success: function (responseJson) {
+                $('#status').append(`<div>` + responseJson.username + `logged in</div>`);
+                console.log(responseJson);
 
-			if ( response.ok ){
-				return response.json();
-			}
+            },
 
-			throw new Error ( response.statusText );
-		})
-		.then( responseJSON => {
+            error: function (err) {
+                $('#status').append(`Something went wrong, try again later`);
 
-			for ( let i = 0; i < responseJSON.length; i ++ ){
-				$('#studentList').append(`<li>
-											${responseJSON[i].firstName}
-										</li>`);
-			}
-		})
-		.catch( err => {
-			console.log( err );
-		});
-		
-		
+
+            }
+
+
+
+        });
+
+
+    });
+
+    //check user logged in
+    $('#checkuser').on("click", function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: "http://localhost:8080/api/checksession",
+            method: "GET",
+            dataType: "json",
+            contentType: "application/json",
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function (responseJson) {
+                $('#checkuserlist').append(`<div>user is ` + responseJson  + `</div>`);
+                //console.log(responseJson);
+
+            },
+
+            error: function (err) {
+                $('#checkuserlist').append(err);
+
+
+            }
+
+
+
+        });
+
+
+    });
+    //logout
+    $('#logout').on("click", function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: "http://localhost:8080/api/logout",
+            method: "GET",
+            dataType: "json",
+            contentType: "application/json",
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function (responseJson) {
+                $('#logoutdiv').append(`<div>user is` + responseJson + ` logout</div>`);
+                //console.log(responseJson);
+
+            },
+
+            error: function (err) {
+                $('#checkuserlist').append(err);
+
+
+            }
+
+
+
+        });
+
+
+    });
+
 
 
 }

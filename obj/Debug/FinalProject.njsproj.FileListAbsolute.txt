@@ -1,0 +1,3 @@
+C:\Users\luis.montemayor\Desktop\DBPracticeFirstServ-master\obj\Debug\FinalProject.njsprojAssemblyReference.cache
+C:\Users\luis.montemayor\Desktop\DBPracticeFirstServ-master\obj\Debug\FinalProject.njsproj.CoreCompileInputs.cache
+C:\Users\luis.montemayor\Desktop\DBPracticeFirstServ-master\bin\Microsoft.NodejsTools.WebRole.dll
