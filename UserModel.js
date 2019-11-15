@@ -1,4 +1,6 @@
 ﻿let mongoose = require('mongoose');
+
+let { Solution } = require('./model');
 let userSchema = mongoose.Schema({
     username: { type: String },
     password: { type: String },
@@ -6,7 +8,15 @@ let userSchema = mongoose.Schema({
     lldate: { type: String },
     country: { type: String },
     business: { type: String },
-    Solution: {
+    SolutionOne: { //top three solutions will appear, no more.
+        type: mongoose.Schema.Types.ObjectId,
+        Ref: 'Solution'
+    },
+    SolutionTwo: {
+        type: mongoose.Schema.Types.ObjectId,
+        Ref: 'Solution'
+    },
+    SolutionThree: {
         type: mongoose.Schema.Types.ObjectId,
         Ref: 'Solution'
     }

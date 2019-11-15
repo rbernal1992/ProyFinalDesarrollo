@@ -10,6 +10,7 @@ let { UserList } = require('./model');
 let { SolutionList } = require('./model');
 let passport = require('passport');
 let session = require('express-session');
+let bcrypt = require('bcryptjs');
 const User = require('./UserModel');
 const { DATABASE_URL, PORT } = require('./config');
 
@@ -83,20 +84,23 @@ app.get('/api/checksession', function (req, res, next) {
 
 app.post( "/api/postuser", jsonParser, ( req, res, next ) => {
 	let username = req.body.username;
+    //let contra = req.body.password;
     let password = req.body.password;
 	let country = req.body.country;
 	let business = req.body.business;
 	let lldate = req.body.lldate;
     var level = 0;
+    let Solution = req.body.Solution;
+   
 	//var Solution = {};
     let newUser = {
         username,
-        password,
+        password: password,
         level,
         lldate,
         country,
-        business
-        //Solution
+        business,
+        Solution
     };
 	var i;
 			for(i in usersaux)
@@ -107,8 +111,32 @@ app.post( "/api/postuser", jsonParser, ( req, res, next ) => {
                         message: "User name already exists"
                     });
 				
-			}
-	UserList.post(newUser)
+    }
+    let hashpass = bcrypt.hash(password, 10, (err, hash) => {
+
+        if (err) return err;
+        User.create({
+            username,
+            password: hash,
+            level,
+            lldate,
+            country,
+            business,
+            Solution
+
+
+        })
+            .then(user => {
+                return res.status(200).json(user);
+            })
+            .catch(error => {
+                throw Error(error);
+            });
+
+
+    });//encrypt
+   
+	/*UserList.post(newUser)
 		.then( user => {
 			
 			return res.status( 201 ).json({
@@ -124,34 +152,17 @@ app.post( "/api/postuser", jsonParser, ( req, res, next ) => {
                 message: "Something went wrong with the DB. Try again later."
             });
 		});
-	
+	*/
 
 });
 
-app.get( "/api/getUser", jsonParser,( req, res, next ) =>{
-	let username = req.body.username;
-    let password = req.body.password;
 
-    UserList.getuser(username, password)
-		.then( user => {
-			return res.status( 200 ).json( user );
-		})
-		.catch( error => {
-			res.statusMessage = "Something went wrong with the DB. Try again later.";
-            return res.status(500).json({
-                status: 500,
-                message: "Something went wrong with the DB. Try again later."
-            });
-		});
-	
-
-
-});
 
 
 //login
-app.post('/api/login', (req, res, next) => {
- 
+app.post('/api/login', jsonParser, (req, res, next) => {
+    let username = req.body.username;
+    let password = req.body.password;
     passport.authenticate('local', function (err, username, info) {
         //onsole.log('here xx');
 

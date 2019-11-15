@@ -23,12 +23,18 @@ let solutionSchema = mongoose.Schema({
 	counteraccess: { type: Number },
 	lastuseraccess: { type: String },
 	id: {type: String },
-	Images: {
+	imageOne: { //two images to add to avoid filling the database with images...image should be in a buffer format
 		data:{ type: Buffer},
 		contentType: {type:String}
 		
 		
-	}
+    },
+    imageTwo: {
+        data: { type: Buffer },
+        contentType: { type: String }
+
+
+    }
 	
 });
 let Solution = mongoose.model( 'Solution', solutionSchema );
@@ -151,6 +157,6 @@ let SolutionList = {
 
 };
 
-module.exports = { UserList, SolutionList, User };
+module.exports = { UserList, SolutionList, User, Solution };
 
 
