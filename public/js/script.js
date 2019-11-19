@@ -3,8 +3,8 @@
 function init(){
 	//Esto necesitas para desplegar la imagen obtenida desde el elemento image.data de la colección soluciones
 /*"use strict";
- var ItemPrev = document.getElementById("ItemPrev");
- var ctx = ItemPrev.getContext("2d");
+var ItemPrev = document.getElementById("ItemPrev");
+var ctx = ItemPrev.getContext("2d");
 var uInt8Array = data;
 var i = uInt8Array.length;
 var binaryString = [i];
