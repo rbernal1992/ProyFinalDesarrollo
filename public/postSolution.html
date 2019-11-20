@@ -4,23 +4,23 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>First Server</title>
+    <title>Publicar solución</title>
     <link href="./css/styles.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
     <header>
-        <h1 id="company"> Siasa </h1>
+        <img id="logo" src="img/logo.png" alt="Logo de la empresa">
     </header>
     <main>
         <div id="navigation">
             <ul id="navMenu">
-                <li>Home</li>
-                <li>Login</li>
-                <li>Registro</li>
-                <li>Contacto</li>
-                <li>Nueva Solucion</li>
-                <li>Ver Soluciones</li>
+                <li id="nHome"><a href="home.html">Home</a></li>
+                <li id="nLogin"><a href="login.html">Log in</a></li>
+                <li id="nRegister"><a href="register.html">Registro</a></li>
+                <li id="nContact"><a href="contact.html">Contacto</a></li>
+                <li id="nNew"><a href="postSolution.html">Nueva solución</a></li>
+                <li id="nSolutions"><a href="solution.html">Ver soluciones</a></li>
                 <li id="logout">Log Out</li>
             </ul>
         </div>
@@ -30,15 +30,15 @@
                 <div class="additm">
                     <fieldset class="titleForm">
                         <legend>Publicar nueva solución</legend>
-                        <label for="additemtitle">Titulo; </label>
+                        <label for="additemtitle">Titulo: </label>
                         <input type="text" id="additemtitle"><br>
                         <label for="additemcontent">Descripcion: </label><br>
                         <textarea name="textarea" id="additemcontent" cols="30" rows="10"></textarea><br>
                         <label for="additemauthor">Autor: </label>
-                        <input type="text" id="additemauthor"/><br>
+                        <input type="text" id="additemauthor" /><br>
                         <label for="additemcomment">Comentarios: </label><br>
                         <textarea name="comments" id="comments" cols="30" rows="10"></textarea><br>
-                        <label for="img">Imagen: </label><input type="file" name="img" id="img" accept=".png">
+                        <label for="img">Imagen: </label><input type="file" name="img" id="img" accept=".png"><br>
                         <input type="submit" value="Submit">
                     </fieldset>
             </form>
@@ -53,7 +53,7 @@
     </footer>
     <script src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-    <script src="./js/script.js"></script>
+    <script src="./js/scriptPostSolution.js"></script>
 
 </body>
 
