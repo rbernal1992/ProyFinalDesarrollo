@@ -57,35 +57,59 @@ function init() {
             }
         });
     });
-
+    // DisplaySolutions
+    var check;
     $.ajax({
         url: "/api/solutionslist",
-        method : "GET",
-        dataType : "json",
-        contentType : "application/json",
+        method: "GET",
+        dataType: "json",
         xhrFields: {
             withCredentials: true
         },
-        success : function(responseJson) {
-            var i;
-            var k;
-            for (k = 0; k < 6; k++) {
-                for (i in responseJson) {
-                    $("#solutions").append(`<li>
-                                                <div><h6>`+responseJson[i].title+`</h6></div>
-                                                <div>Por: `+responseJson[i].author+`</div>
-                                                <div>`+responseJson[i].description+`</div>
-                                                <div> Calificacion: `+responseJson[i].gradenum+`</div>
-                                                <div>Comentarios: `+responseJson[i].grade+`</div>
-                                                <div> ID: `+responseJson[i].id+`</div>
-                                            </li>`)
-                }
-            }
+        contentType: "application/json",
+        success: function (responseJson) {
+            var Iditem;
+            var ItemPrev;
+            var ctx = [];
+            
+            for (check in responseJson){
+            $('#listasoluciones').append(`<li><div> title: ` + responseJson[check].title + `</div>
+                                            <div> author:` + responseJson[check].author + `</div>
+                                            <div> description:` + responseJson[check].description + `</div>
+                                            <div> review:` + responseJson[check].grade + `</div>
+                                            <div> grade:` + responseJson[check].gradenum + `</div>
+                                            <div> last user who accessed:` + responseJson.lastuseraccess + `</div>
+                                            <canvas id="ItemPrev`+contador+`"> </canvas>
+                                           </li>`);
+            
+            var img = new Image();
+            bufferurl[contador] = responseJson[check].imageOne;	
+            Iditem = "ItemPrev" + contador;
+                ItemPrev = document.getElementById(Iditem);
+                //console.log(ItemPrev);
+                img.src = bufferurl[contador];
+                ctx[contador] = ItemPrev.getContext("2d");
+                //console.log("After context");
+                loadSprite(bufferurl[contador],ctx[contador],function(){
+                    
+                });
+                //img.src = responseJson[check].imageOne;
+                //console.log(img.src);
+            
+                /*img.onload = function(){
+                    console.log("Image Onload");
+                    ctx.drawImage(img, 33, 71, 500,300);
+                
+                }*/
+            //console.log(bufferurl[contador]);
+            contador++;
+            };
         },
-        error : function(error) {
-            console.log(error);
-        }
-    })
+        error: function (err) {
+            $('#status').append(`Something went wrong, try again later`);
+        },
+            async: false
+    });
 }
 
 init();
