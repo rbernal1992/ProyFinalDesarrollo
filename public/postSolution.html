@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>First Server</title>
+  <link href="./css/styles.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <header>
+    <h1 id="company"> Siasa </h1>
+  </header>
+  <main>
+    <div id="navigation">
+      <ul id="navMenu">
+        <li>Home</li>
+        <li>Login</li>
+        <li>Registro</li>
+        <li>Contacto</li>
+        <li>Nueva Solucion</li>
+        <li>Ver Soluciones</li>
+        <li id="logout">Log Out</li>
+      </ul>
+    </div>
+    
+    <div id="postForm">
+      <form id="postLists">
+        <div class="additm">
+          <fieldset class="titleForm">
+            <legend>Publicar nueva solución</legend>
+          <div><label for="additemtitle">Titulo. </label><input type="text" id="additemtitle"></div>
+          <div><label for="additemcontent">Descripcion: </label><textarea name="textarea" id="additemcontent"
+              style="width:250px;height:150px;"></textarea></div>
+          <div><label for="additemauthor">Autor: </label><input id="additemauthor" /></div>
+          <div><label for="additempbdateday">Dia: </label><input id="additempbdateday" class="newDate"><label
+              for="additempbdatemonth"> Mes: </label><input id="additempbdatemonth" class="newDate"><label
+              for="additempbdateyear"> Año: </label><input id="additempbdateyear" class="newDate"></div>
+          <div><label for="additemgrade">Calificación</label><input type="number" id="additemgrade" min="0" max="10"></div>
+          <div><label for="img">Imagen: </label><input type="file" name="img" id="img"></div>
+          <button type="submit" id="submt">Submit</button>
+          </fieldset>
+      </form>
+    </div>
+
+  </main>
+  <footer>
+    <div id="status"></div>
+    <button id="checkuser">CheckUser</button>
+    <span id="checkuserlist">this user is </span>
+    <span id="logoutdiv">logout </span>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+  <script src="./js/script.js"></script>
+
+</body>
+
+</html>

@@ -110,8 +110,6 @@ img.onload = function(){
 
     });
 
-
-
 }
 
 init();
