@@ -163,9 +163,13 @@ app.post( "/api/postuser", jsonParser, ( req, res, next ) => {
 app.post('/api/login', jsonParser, (req, res, next) => {
     let username = req.body.username;
     let password = req.body.password;
+	let d = Date();
+	let lldate = d.toString();
+	//	console.log("fecha es " + lldate);
     passport.authenticate('local', function (err, username, info) {
         //onsole.log('here xx');
-
+	
+		
         //var token;
         if (err) {
             console.log(err);
@@ -173,13 +177,28 @@ app.post('/api/login', jsonParser, (req, res, next) => {
         }
         // If a user is found
         if (username) {
-            console.log('here');
+         //   console.log('here');
             sess = req.session;
             sess.username = username.username;
           //  res.setHeader('Content-Type', 'text/html');
            // res.write('<p>username: ' + sess.username+'</p>');
             //res.end('done');
           //  token = user.generateJwt();
+		  var uUser = { 
+		  lldate: lldate
+		  
+		  };
+		 // console.log(username);
+		  
+		  User.findOneAndUpdate({ username: username.username }, uUser, { new: true })
+            .then(user => {
+                console.log(user);
+            })
+            .catch(error => {
+                throw Error(error);
+            });
+			
+			
            return res.status(200).json(
                 username
             //    "token": token
@@ -192,6 +211,7 @@ app.post('/api/login', jsonParser, (req, res, next) => {
 	
 	
 });
+
 
 //logout
 app.get('/api/logout', (req, res, next) => {
@@ -234,18 +254,14 @@ app.post("/api/createSolution",jsonParser, (req,res,next) => {
 	let gradenum = req.body.gradenum;
 	let counteraccess = req.body.counteraccess;
 	let lastuseraccess = req.body.lastuseraccess;
-	var imgpath = req.body.imgpath;
+	let imageOne = req.body.imgbuffer;
+	//var imgpath = req.body.imgpath;
 	let id = uuid();
-	let Images = {};
 	
 	
 	
 	
-	Images.data = fs.readFileSync(imgpath);
-	Images.contentType = 'image/png';
-    var imgcontType;
-	
-    let newSolution = {
+	let newSolution = {
         title,
         author,
         description,
@@ -254,14 +270,14 @@ app.post("/api/createSolution",jsonParser, (req,res,next) => {
         counteraccess,
         lastuseraccess,
         id,
-        Images
+        imageOne
 
     };
 	SolutionList.post(newSolution)
 		.then( solution => {
 			
 			return res.status( 201 ).json({
-				message : "User added to the list",
+				message : "New Solution Added",
 				status : 201,
 				solution : solution
 			});

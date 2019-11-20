@@ -18,22 +18,15 @@ let solutionSchema = mongoose.Schema({
 	author: { type: String },
 	description: { type: String },
 	datecreated: { type: String }, 
-	grade : { type : Number } ,
+	grade : { type : String } ,
 	gradenum: { type: Number },
 	counteraccess: { type: Number },
 	lastuseraccess: { type: String },
 	id: {type: String },
-	imageOne: { //two images to add to avoid filling the database with images...image should be in a buffer format
-		data:{ type: Buffer},
-		contentType: {type:String}
-		
-		
+	imageOne: { type: String		
     },
     imageTwo: {
-        data: { type: Buffer },
-        contentType: { type: String }
-
-
+         type: String   
     }
 	
 });
