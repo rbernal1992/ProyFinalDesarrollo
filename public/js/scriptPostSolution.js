@@ -63,7 +63,7 @@ function init() {
         let d = Date.now();
         let dnow = d.toString();
         var nbase64;
-        var files = $('#file')[0].files[0];
+        var files = $('#img')[0].files[0];
         files.convertToBase64(function(base64) {
             $.ajax({
                 url: "/api/createSolution",
