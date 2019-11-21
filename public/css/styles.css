@@ -7,6 +7,16 @@ html {
     min-height: 100%;
 }
 
+input[type=text] {
+  width: 500px;
+  border-radius: 5px;
+}
+
+input[type=email] {
+  width: 500px;
+  border-radius: 5px;
+}
+
 body {
     background: #304352;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #d7d2cc, #304352);  /* Chrome 10-25, Safari 5.1-6 */
@@ -21,6 +31,11 @@ footer {
     bottom: 0;
     height: 20px;
     width: 100%;
+}
+
+#container {
+  display: block;
+  width: 436px;
 }
 
 #navMenu {

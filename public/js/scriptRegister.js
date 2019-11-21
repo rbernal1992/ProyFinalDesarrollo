@@ -26,9 +26,11 @@ function init() {
                 usuario = responseJson.username;
                 if (usuario == "none") {
                     $("#nModify").css("visibility", "hidden");
+                    $("#nNew").css("visibility", "hidden");
                 }
                 else {
                     $("#nModify").css("visibility", "visible");
+                    $("#nNew").css("visibility", "visible");
                 }
             },
 
