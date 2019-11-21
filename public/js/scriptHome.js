@@ -1,5 +1,6 @@
 var slideIndex = 1;
 showSlides(slideIndex);
+var usuario;
 
 // Next/previous controls
 function plusSlides(n) {
@@ -29,8 +30,6 @@ function showSlides(n) {
 
 function init() {
     //check user logged in
-    $('#checkuser').on("click", function (event) {
-        event.preventDefault();
         $.ajax({
             url: "/api/checksession",
             method: "GET",
@@ -41,17 +40,20 @@ function init() {
             },
             success: function (responseJson) {
                 $('#checkuserlist').append(`<div>user is ` + responseJson + `</div>`);
-                //console.log(responseJson);
-
+                console.log("entro");
+                usuario = responseJson;
+                if (usuario == "none") {
+                    $("#nModify").css("visibility", "hidden");
+                }
+                else {
+                    $("#nModify").css("visibility", "visible");
+                }
             },
-
             error: function (err) {
                 $('#checkuserlist').append(err);
-
-
             }
         });
-    });
+    
     //logout
     $('#logout').on("click", function (event) {
         event.preventDefault();
@@ -71,6 +73,7 @@ function init() {
 
             error: function (err) {
                 $('#checkuserlist').append(err);
+
 
 
             }
