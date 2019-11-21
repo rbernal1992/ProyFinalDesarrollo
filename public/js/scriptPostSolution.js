@@ -65,6 +65,7 @@ function init() {
         var nbase64;
         var files = $('#img')[0].files[0];
         files.convertToBase64(function(base64) {
+			//console.log(base64);
             $.ajax({
                 url: "/api/createSolution",
                 data: JSON.stringify({
@@ -76,7 +77,7 @@ function init() {
                     "gradenum" : 10,
                     "counteraccess" : 0,
                     "lastuseraccess" : "",
-                    "Images" : base64
+                    "imageOne" : base64
                 }),
                 method : "POST",
                 dataType : "json",

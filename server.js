@@ -8,6 +8,7 @@ let uuid = require('uuid/v4');
 let fs = require('fs');
 let { UserList } = require('./model');
 let { SolutionList } = require('./model');
+let { Solution } = require('./model');
 let passport = require('passport');
 let session = require('express-session');
 let bcrypt = require('bcryptjs');
@@ -71,8 +72,21 @@ app.get('/api/checksession', function (req, res, next) {
     //res.write('<p>views: ' + req.session.username + '</p>');
     //res.write('<p>expires in: ' + (req.session.cookie.maxAge / 1000) + 's</p>');
     //res.end();
-    if (req.session.username)
-        return res.status(200).json(req.session.username);
+    if (req.session.username){
+		User.find({username: req.session.username})
+		.then(user => {
+        return res.status(200).json(user);
+		})
+		.catch(error => {
+			res.statusMessage = "Something went wrong with the DB. Try again later.";
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
+			
+		});
+		
+	}
     else
         return res.status(200).json('none');
     //} else {
@@ -224,8 +238,8 @@ app.get('/api/logout', (req, res, next) => {
     });
 
 });
-app.put( "/api/updateUser/:username",jsonParser, ( req, res, next ) =>{
-	let username = req.params.username;
+app.put( "/api/updateUser",jsonParser, ( req, res, next ) =>{
+	//let username = req.params.username;
 	let usernamebdy = req.body.username;
     let password = req.body.password;
 	let country = req.body.country;
@@ -246,6 +260,70 @@ app.put( "/api/updateUser/:username",jsonParser, ( req, res, next ) =>{
 });
 
 
+app.put( "/api/addUserFav/:username",jsonParser, ( req, res, next ) =>{
+	let username = req.params.username;
+	let addid = req.body.nid;
+	let solut = [];
+	let nsol = 0;
+	var loop=0;
+	var element;
+	User.findOne({username : username})
+		.then(user => {
+			
+			solut[0] = user.SolutionOne;
+			 solut[1] = user.SolutionTwo;
+			 solut[2] = user.SolutionThree;
+			 //console.log(addid);
+			 Solution.findOne({_id: addid})
+				.then( solution =>  {
+						//console.log(solution._id);
+						let solutionid = solution._id;	
+					 
+					 if(!solut[0] || solut[0] ==="" ){
+						// nsol = 1;
+						 element = { SolutionOne : { _id : solutionid} };
+					 }
+					 else if (!solut[1] || solut[1] ===""){
+						 //nsol = 2;
+						 element = { SolutionTwo : { _id : solutionid} };
+					 }
+					 else{
+						 //nsol = 3;
+						 element = { SolutionThree : { _id : solutionid} };
+					 }
+					 console.log(element);
+					 User.findOneAndUpdate({ username: username }, element, { new: true })
+					.then( user => {
+						return res.status( 200 ).json( user );
+					})
+					.catch( error => {
+						res.statusMessage = "Something went wrong with the DB. Try again later.";
+						return res.status(500).json({
+							status: 500,
+							message: "Something went wrong with the DB. Try again later."
+						});
+					});
+			})
+			.catch(error => {
+						res.statusMessage = "Something went wrong with the solution search. Try again later.";
+						return res.status(500).json({
+							status: 500,
+							message: "Something went wrong with the solution search. Try again later."
+						});
+				});
+		})
+		.catch(error => {
+			throw Error(error)
+		});
+		
+		
+    
+	
+	
+});
+
+
+
 app.post("/api/createSolution",jsonParser, (req,res,next) => {
 	let title = req.body.title;
 	let author = req.body.author;
@@ -254,10 +332,10 @@ app.post("/api/createSolution",jsonParser, (req,res,next) => {
 	let gradenum = req.body.gradenum;
 	let counteraccess = req.body.counteraccess;
 	let lastuseraccess = req.body.lastuseraccess;
-	let imageOne = req.body.imgbuffer;
+	let imageOne = req.body.imageOne;
 	//var imgpath = req.body.imgpath;
 	let id = uuid();
-	
+	console.log(imageOne);
 	
 	
 	
@@ -337,8 +415,8 @@ app.put( "/api/updateSolution/:id",jsonParser, ( req, res, next ) =>{
 	var element = {title: title, author: author, description: description, grade: grade, gradenum: gradenum, counteraccess: counteraccess, lastuseraccess: lastuseraccess};
 	
 	SolutionList.put(id, element )
-		.then( user => {
-			return res.status( 200 ).json( user );
+		.then( solution => {
+			return res.status( 200 ).json( solution );
 		})
 		.catch( error => {
 			res.statusMessage = "Something went wrong with the DB. Try again later.";
@@ -348,6 +426,45 @@ app.put( "/api/updateSolution/:id",jsonParser, ( req, res, next ) =>{
             });
 		});
 });
+
+
+app.put( "/api/gradeSolution/:id",jsonParser, ( req, res, next ) =>{
+	let id = req.params.id;
+	let grade = req.body.grade;
+	let gradenum;
+	//let gradenum = req.body.gradenum;
+	//let counteraccess = req.body.counteraccess;
+	///let lastuseraccess = req.body.lastuseraccess;
+	//var element = {grade: grade, grade};
+	
+	Solution.findOne({id:id})
+		.then(solution => {
+			grade = solution.grade + grade;
+			gradenum = solution.gradenum+1;
+		})
+		.catch(error => {
+			throw Error(error)
+		});
+	
+	var element = {
+		grade : grade,
+		gradenum : gradenum
+		
+	}
+	
+	SolutionList.put(id, element )
+		.then( solution => {
+			return res.status( 200 ).json( solution );
+		})
+		.catch( error => {
+			res.statusMessage = "Something went wrong with the DB. Try again later.";
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
+		});
+});
+
 
 
 app.get( "/api/getSolutionAuthor", ( req, res, next ) =>{

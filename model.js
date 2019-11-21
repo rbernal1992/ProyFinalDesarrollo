@@ -18,13 +18,12 @@ let solutionSchema = mongoose.Schema({
 	author: { type: String },
 	description: { type: String },
 	datecreated: { type: String }, 
-	grade : { type : String } ,
+	grade : { type : Number } ,
 	gradenum: { type: Number },
 	counteraccess: { type: Number },
 	lastuseraccess: { type: String },
 	id: {type: String },
-	imageOne: { type: String		
-    },
+	imageOne: { type: String },
     imageTwo: {
          type: String   
     }
@@ -133,8 +132,7 @@ let SolutionList = {
                 throw Error(error);
             });
     },
-
-    DELETE: function (id) {
+	DELETE: function (id) {
         return Solution.findOneAndRemove({ id: id })
             .then(student => {
                 return student;
