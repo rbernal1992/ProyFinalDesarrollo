@@ -1,35 +1,101 @@
 var usuario;
+var datos;
+var idFav;
 
 function init() {
     //check user logged in
-        $.ajax({
-            url: "/api/checksession",
-            method: "GET",
-            dataType: "json",
-            contentType: "application/json",
-            xhrFields: {
-                withCredentials: true
-            },
-            success: function (responseJson) {
-                $('#checkuserlist').append(`<div>user is ` + responseJson + `</div>`);
-                globalUser = responseJson;
-                //console.log(responseJson);
-                usuario = responseJson;
-                if (usuario == "none") {
-                    $("#nModify").css("visibility", "hidden");
-                }
-                else {
-                    $("#nModify").css("visibility", "visible");
-                }
-            },
-
-            error: function (err) {
-                $('#checkuserlist').append(err);
-
-
+    $.ajax({
+        url: "/api/checksession",
+        method: "GET",
+        dataType: "json",
+        contentType: "application/json",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: function (responseJson) {
+            $('#checkuserlist').append(`<div>user is ` + responseJson + `</div>`);
+            //console.log(responseJson);
+            usuario = responseJson.username;
+            if (usuario == "none") {
+                $("#nModify").css("visibility", "hidden");
             }
-        });
-  
+            else {
+                $("#nModify").css("visibility", "visible");
+            }
+            datos = responseJson;
+            $("#user").val(datos.username);
+            $("#user").prop("disabled", true);
+            $("#country").val(datos.country);
+            $("#business").val(datos.business);
+            idFav = datos.id;
+            if (!datos.SolutionOne) {
+                $.ajax({
+                    url : "/api/findOneSolution" + idFav,
+                    method : "GET",
+                    dataType : "json",
+                    contentType: "application/json",
+                    success : function(responseJson) {
+                        $("#fav").apend(`<li>
+                                            <div>Titulo: `+responseJson.title+`</div>
+                                            <div>Autor: `+responseJson.author+`</div>
+                                            <div>Descripción: `+responseJson.description+`</div>
+                                            <div>Fecha de creación: `+responseJson.datecreated+`</div>
+                                            <div>Calificación: `+responseJson.grade+`</div>
+                                         </li>`)
+                    },
+                    error : function(error) {
+                        console.log(error);
+                    }
+                })
+            }
+            if (!datos.SolutionTwo) {
+                $.ajax({
+                    url : "/api/findOneSolution" + idFav,
+                    method : "GET",
+                    dataType : "json",
+                    contentType: "application/json",
+                    success : function(responseJson) {
+                        $("#fav").apend(`<li>
+                                            <div>Titulo: `+responseJson.title+`</div>
+                                            <div>Autor: `+responseJson.author+`</div>
+                                            <div>Descripción: `+responseJson.description+`</div>
+                                            <div>Fecha de creación: `+responseJson.datecreated+`</div>
+                                            <div>Calificación: `+responseJson.grade+`</div>
+                                         </li>`)
+                    },
+                    error : function(error) {
+                        console.log(error);
+                    }
+                })
+            }
+            if (!datos.SolutionThree) {
+                $.ajax({
+                    url : "/api/findOneSolution" + idFav,
+                    method : "GET",
+                    dataType : "json",
+                    contentType: "application/json",
+                    success : function(responseJson) {
+                        $("#fav").apend(`<li>
+                                            <div>Titulo: `+responseJson.title+`</div>
+                                            <div>Autor: `+responseJson.author+`</div>
+                                            <div>Descripción: `+responseJson.description+`</div>
+                                            <div>Fecha de creación: `+responseJson.datecreated+`</div>
+                                            <div>Calificación: `+responseJson.grade+`</div>
+                                         </li>`)
+                    },
+                    error : function(error) {
+                        console.log(error);
+                    }
+                })
+            }
+        },
+        error: function (err) {
+            $('#checkuserlist').append(err);
+
+
+        }
+    });
+
     //logout
     $('#logout').on("click", function (event) {
         event.preventDefault();
@@ -52,7 +118,38 @@ function init() {
         });
     });
 
-    
+    $("#register").on("submit", function (event) {
+        event.preventDefault();
+        let d = Date.now();
+        let dnow = d.toString();
+
+        if ($("#pswd").val() != $("#repPswd").val()) {
+            $.ajax({
+                url: "/api/",
+                data: JSON.stringify({
+                    "username": $("#user").val(),
+                    "passwd": $("#pswd").val(),
+                    "level": "",
+                    "lastlogindate": dnow,
+                    "country": $("#coutnry").val(),
+                    "business": $("#business").val(),
+                    "Solution": {}
+                }),
+                method: "PUT",
+                dataType: "json",
+                contentType: "application/json",
+                success: function (responseJson) {
+                    alert("Usuario registrado");
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+        }
+        else {
+            alert("Asegurese que la contraseña sea correcta")
+        }
+    });
 }
 
 init();

@@ -23,7 +23,7 @@ function init() {
             success: function (responseJson) {
                 $('#checkuserlist').append(`<div>user is ` + responseJson + `</div>`);
                 //console.log(responseJson);
-                usuario = responseJson;
+                usuario = responseJson.username;
                 if (usuario == "none") {
                     $("#nModify").css("visibility", "hidden");
                 }
