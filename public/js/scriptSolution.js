@@ -4,6 +4,7 @@ var globalUser;
 var allPosts;
 let page = 0;
 var usuario;
+var bufferurl = [];
 File.prototype.convertToBase64 = function(callback){
     var reader = new FileReader();
     reader.onloadend = function (e) {
@@ -11,6 +12,16 @@ File.prototype.convertToBase64 = function(callback){
     };   
     reader.readAsDataURL(this);
 };
+function loadSprite(src, ctx ,callback){
+	//var Sprite = new Image();
+	console.log(ctx);
+	var img = new Image();
+	img.src = src;
+	img.onload = function() {
+    ctx.drawImage(img, 33, 71, 500, 300);
+	};
+	
+}	
 
 function init() {
     //check user logged in
@@ -25,7 +36,7 @@ function init() {
             success: function (responseJson) {
                 $('#checkuserlist').append(`<div>user is ` + responseJson + `</div>`);
                 globalUser = responseJson;
-                //console.log(responseJson);
+                console.log(responseJson);
                 usuario = responseJson;
                 if (usuario == "none") {
                     $("#nModify").css("visibility", "hidden");
@@ -83,9 +94,9 @@ function init() {
             var ctx = [];
             var i;
             
-            for (i = page*5; i < i+5; i++){
+            for (i in responseJson){
             $('#listasoluciones').append(`<li><div> title: ` + allPosts[i].title + `</div>
-                                            <div class="id`+i+`" style="visibility: hidden">`+allPosts[i]._id+`</div> 
+                                            <div id="id0" style="visibility: hidden">`+allPosts[i]._id+`</div> 
                                             <div> author:` + allPosts[i].author + `</div>
                                             <div> description:` + allPosts[i].description + `</div>
                                             <div> review:` + allPosts[i].grade + `</div>
@@ -96,7 +107,9 @@ function init() {
                                            </li>`);
             
             var img = new Image();
-            bufferurl[contador] = responseJson[check].imageOne;	
+			
+            bufferurl[contador] = responseJson[i].imageOne;
+			//console.log(bufferurl[contador]);
             Iditem = "ItemPrev" + contador;
                 ItemPrev = document.getElementById(Iditem);
                 //console.log(ItemPrev);
@@ -127,12 +140,12 @@ function init() {
     // Favorito
     $("#solutions").on("click", ".favorito", function(event) {
         event.preventDefault();
-        let favID = $("#favID"+this.id).text();
-
+        let favID = $(this).parent().parent().find('#id0').html();
+		console.log(globalUser[0].username);
         $.ajax({
-            url : "/api/addUserFav/" + globalUser,
+            url : "/api/addUserFav/" + globalUser[0].username,
             data : JSON.stringify({
-                "nId" : favID
+                "nid" : favID
             }),
             method : "PUT",
             dataType : "json",
