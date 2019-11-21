@@ -2,6 +2,7 @@ var slideIndex = 1;
 showSlides(slideIndex);
 var usuario;
 var califs = [];
+var obj = {}
 
 // Next/previous controls
 function plusSlides(n) {
@@ -92,9 +93,8 @@ function init() {
             for (each in responseJson) {
                 let ky = responseJson[each].id;
                 let value = responseJson[each].grade;
-                califs.push({
-                    ky: value
-                })
+                obj[ky] = value;
+                califs.push(obj)
             }
             // Create items array
             var items = Object.keys(califs).map(function (key) {
