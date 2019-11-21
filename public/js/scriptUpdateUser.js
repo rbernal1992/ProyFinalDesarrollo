@@ -28,7 +28,7 @@ function init() {
             $("#country").val(datos.country);
             $("#business").val(datos.business);
             idFav = datos.id;
-            if (!datos.SolutionOne) {
+            if (datos.SolutionOne) {
                 $.ajax({
                     url : "/api/findOneSolution" + idFav,
                     method : "GET",
@@ -45,10 +45,11 @@ function init() {
                     },
                     error : function(error) {
                         console.log(error);
+                        $("#fav").apend(`<li>Solución no existente</li>`);
                     }
                 })
             }
-            if (!datos.SolutionTwo) {
+            if (datos.SolutionTwo) {
                 $.ajax({
                     url : "/api/findOneSolution" + idFav,
                     method : "GET",
@@ -65,10 +66,11 @@ function init() {
                     },
                     error : function(error) {
                         console.log(error);
+                        $("#fav").apend(`<li>Solución no existente</li>`);
                     }
                 })
             }
-            if (!datos.SolutionThree) {
+            if (datos.SolutionThree) {
                 $.ajax({
                     url : "/api/findOneSolution" + idFav,
                     method : "GET",
@@ -85,6 +87,7 @@ function init() {
                     },
                     error : function(error) {
                         console.log(error);
+                        $("#fav").apend(`<li>Solución no existente</li>`);
                     }
                 })
             }

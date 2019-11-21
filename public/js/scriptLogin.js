@@ -18,7 +18,9 @@ function init() {
             success: function (responseJson) {
                 $('#status').append(`<div>` + responseJson.username + `logged in</div>`);
                 console.log(responseJson);
-
+                alert("Inicio de sesión exitosos");
+                $("#username").val("");
+                $("#password").val("");
             },
 
             error: function (err) {
