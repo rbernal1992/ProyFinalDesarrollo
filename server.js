@@ -232,9 +232,11 @@ app.put( "/api/updateUser",jsonParser, ( req, res, next ) =>{
     let password = req.body.password;
 	let country = req.body.country;
 	let business = req.body.business;
-    var element = { username: username, password: password, country: country, business: business};
+    
 	
-	UserList.put(username, element )
+	 let hashpass = bcrypt.hash(password, 10, (err, hash) => {
+		 var element = { username: username, password: hash, country: country, business: business};
+		UserList.put(username, element )
 		.then( user => {
 			return res.status( 200 ).json( user );
 		})
@@ -245,6 +247,14 @@ app.put( "/api/updateUser",jsonParser, ( req, res, next ) =>{
                 message: "Something went wrong with the DB. Try again later."
             });
 		});
+
+
+    });
+	
+	
+	
+	
+	
 });
 
 

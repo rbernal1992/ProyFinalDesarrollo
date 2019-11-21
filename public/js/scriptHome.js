@@ -113,7 +113,7 @@ function init() {
 			console.log(newArray);
 			var contsol = 0;
 		  for (var chkk in newArray) {
-			  if(contsol < 5){
+			  if(contsol > 1){
              $("#mejores").append(`<li><div> title: ` + newArray[chkk].title + `</div>
                                                 <div id="id0" style="visibility: hidden">`+ newArray[chkk]._id + `</div> 
                                                 <div> author:` + newArray[chkk].author + `</div>
