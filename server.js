@@ -328,14 +328,17 @@ app.post("/api/createSolution",jsonParser, (req,res,next) => {
 	let title = req.body.title;
 	let author = req.body.author;
 	let description = req.body.description;
-	let grade = req.body.grade;
-	let gradenum = req.body.gradenum;
-	let counteraccess = req.body.counteraccess;
-	let lastuseraccess = req.body.lastuseraccess;
+	//let grade = req.body.grade;
+	//let gradenum = req.body.gradenum;
+	let counteraccess = 0;
+	let lastuseraccess = "";
 	let imageOne = req.body.imageOne;
+	
+	grade = 10;
+	gradenum = 1;
 	//var imgpath = req.body.imgpath;
 	let id = uuid();
-	console.log(imageOne);
+	//console.log(imageOne);
 	
 	
 	
@@ -408,12 +411,9 @@ app.put( "/api/updateSolution/:id",jsonParser, ( req, res, next ) =>{
 	let title = req.body.title;
 	let author = req.body.author;
 	let description  = req.body.description;
-	let grade = req.body.grade;
-	let gradenum = req.body.gradenum;
-	let counteraccess = req.body.counteraccess;
-	let lastuseraccess = req.body.lastuseraccess;
-	var element = {title: title, author: author, description: description, grade: grade, gradenum: gradenum, counteraccess: counteraccess, lastuseraccess: lastuseraccess};
 	
+	var element = {title: title, author: author, description: description};
+	console.log(element);
 	SolutionList.put(id, element )
 		.then( solution => {
 			return res.status( 200 ).json( solution );
@@ -430,28 +430,25 @@ app.put( "/api/updateSolution/:id",jsonParser, ( req, res, next ) =>{
 
 app.put( "/api/gradeSolution/:id",jsonParser, ( req, res, next ) =>{
 	let id = req.params.id;
-	let grade = req.body.grade;
+	let grade = parseInt(req.body.grade);
 	let gradenum;
 	//let gradenum = req.body.gradenum;
 	//let counteraccess = req.body.counteraccess;
 	///let lastuseraccess = req.body.lastuseraccess;
 	//var element = {grade: grade, grade};
-	
-	Solution.findOne({id:id})
+	console.log(grade);
+	console.log(id);
+	Solution.findOne({_id:id})
 		.then(solution => {
+			console.log(solution.grade);
 			grade = solution.grade + grade;
 			gradenum = solution.gradenum+1;
-		})
-		.catch(error => {
-			throw Error(error)
-		});
-	
-	var element = {
-		grade : grade,
-		gradenum : gradenum
+			let element = {
+				grade : grade,
+				gradenum : gradenum
 		
-	}
-	
+			}
+	console.log(element);
 	SolutionList.put(id, element )
 		.then( solution => {
 			return res.status( 200 ).json( solution );
@@ -463,6 +460,12 @@ app.put( "/api/gradeSolution/:id",jsonParser, ( req, res, next ) =>{
                 message: "Something went wrong with the DB. Try again later."
             });
 		});
+		})
+		.catch(error => {
+			throw Error(error)
+		});
+	
+	
 });
 
 
@@ -484,8 +487,24 @@ app.get( "/api/getSolutionAuthor", ( req, res, next ) =>{
 		});
 });
 
-app.delete( "/api/deleteSolution",( req, res, next ) =>{
+app.get( "/api/findOneSolution",( req, res, next ) =>{
 		let id = req.query.id;
+	
+	Solution.findOne({_id : id})
+		.then( solution => {
+			return res.status( 200 ).json( solution );
+		})
+		.catch( error => {
+			res.statusMessage = "Something went wrong with the DB. Try again later.";
+            return res.status(500).json({
+                status: 500,
+                message: "Something went wrong with the DB. Try again later."
+            });
+		});
+});
+
+app.delete( "/api/deleteSolution/:id",( req, res, next ) =>{
+		let id = req.params.id;
 	
 	SolutionList.DELETE(id)
 		.then( solution => {
@@ -499,6 +518,7 @@ app.delete( "/api/deleteSolution",( req, res, next ) =>{
             });
 		});
 });
+
 
 let server;
 

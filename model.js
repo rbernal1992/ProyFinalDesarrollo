@@ -124,7 +124,7 @@ let SolutionList = {
             });
     },
     put: function (id, uSolution) {
-        return Solution.findOneAndUpdate({ id: id }, uSolution, { new: true })
+        return Solution.findOneAndUpdate({ _id: id }, uSolution, { new: true })
             .then(solution => {
                 return solution;
             })
@@ -133,7 +133,7 @@ let SolutionList = {
             });
     },
 	DELETE: function (id) {
-        return Solution.findOneAndRemove({ id: id })
+        return Solution.findOneAndRemove({ _id: id })
             .then(student => {
                 return student;
             })
