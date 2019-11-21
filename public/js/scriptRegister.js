@@ -70,18 +70,19 @@ function init() {
         event.preventDefault();
         let d = Date.now();
         let dnow = d.toString();
-        
-        if ($("#pswd").val() != $("#repPswd").val()) {
+        let pais = $("#country").find(":selected").text();
+		console.log(pais);
+        if ($("#pswd").val() == $("#repPswd").val()) {
+			console.log("entre");
             $.ajax({
-                url: "/api/",
+                url: "/api/postuser",
                 data: JSON.stringify({
                     "username": $("#user").val(),
-                    "passwd": $("#pswd").val(),
-                    "level" : "",
-                    "lastlogindate" : dnow,
-                    "country": $("#coutnry").val(),
+                    "password": $("#pswd").val(),
+                    "lldate" : dnow,
+                    "country": pais,
                     "business" : $("#business").val(),
-                    "Solution" : {}
+                    "SolutionOne" : {}
                 }),
                 method : "POST",
                 dataType : "json",
@@ -90,12 +91,13 @@ function init() {
                     alert("Usuario registrado");
                     $("#user").val("")
                     $("#pswd").val("")
-                    $("#coutnry").val("")
+                    $("#country").val("")
                     $("#business").val("")
                 },
                 error : function(error) {
                     console.log(error);
-                }
+                },
+				async: false
             })
         }
         else {

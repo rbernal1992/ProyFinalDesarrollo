@@ -2,7 +2,8 @@ var slideIndex = 1;
 showSlides(slideIndex);
 var usuario;
 var califs = [];
-var obj = {}
+var obj = {};
+var contador = 0;
 
 // Next/previous controls
 function plusSlides(n) {
@@ -84,47 +85,55 @@ function init() {
         });
     });
 
-    $.ajax({
+    //----------------------------------sort 
+	
+	$.ajax({
         url: "/api/solutionslist",
         method: "GET",
         dataType: "json",
         contentType: "application/json",
         success: function (responseJson) {
-            for (each in responseJson) {
-                let ky = responseJson[each].id;
-                let value = responseJson[each].grade;
-                obj[ky] = value;
-                califs.push(obj)
-            }
-            // Create items array
-            var items = Object.keys(califs).map(function (key) {
-                return [key, califs[key]];
-            });
-
-            // Sort the array based on the second element
-            items.sort(function (first, second) {
-                return second[1] - first[1];
-            });
-
-            // Create a new array with only the first 5 items
-            items.slice(0, 5);
-
-            for (i in items) {
-                $("#mejores").append(`<li><div> title: ` + items[i].title + `</div>
-                                        <div id="id0" style="visibility: hidden">`+ items[i]._id + `</div> 
-                                        <div> author:` + items[i].author + `</div>
-                                        <div> description:` + items[i].description + `</div>
-                                        <div> review:` + items[i].grade + `</div>
-                                        <div> last user who accessed:` + responseJson.lastuseraccess + `</div>
-                                        <div> Favorito: <button class="favorito">Favorito</button>
-                                        <canvas id="ItemPrev`+ contador + `"> </canvas>
-                                      </li>`);
+			var sortable = [];
+			for(var chk in responseJson){
+				sortable.push([responseJson[chk], (responseJson[chk].grade/responseJson[chk].gradenum)]);
+				
+			}
+			
+			sortable.sort(function(a,b){
+				return a[1] - b[1];
+				
+			});
+			console.log(sortable);
+			
+			var newArray = [];
+			for(var chk in sortable)
+			{
+				newArray[chk] = sortable[chk][0];
+			}
+			console.log(newArray);
+			var contsol = 0;
+		  for (var chkk in newArray) {
+			  if(contsol < 5){
+             $("#mejores").append(`<li><div> title: ` + newArray[chkk].title + `</div>
+                                                <div id="id0" style="visibility: hidden">`+ newArray[chkk]._id + `</div> 
+                                                <div> author:` + newArray[chkk].author + `</div>
+                                                <div> description:` + newArray[chkk].description + `</div>
+                                                <div> review:` + newArray[chkk].grade + `</div>
+                                                <div> last user who accessed:` + newArray[chkk].lastuseraccess + `</div>
+                                                
+			  </li>`);
+			  }
+			  contsol++;
             }
         },
         error: function (error) {
             console.log(error);
         }
     });
+	
+	
+	
+	
 }
 
 init();

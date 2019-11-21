@@ -13,8 +13,9 @@ let passport = require('passport');
 let session = require('express-session');
 let bcrypt = require('bcryptjs');
 const User = require('./UserModel');
-const { DATABASE_URL, PORT } = require('./config');
 
+const { DATABASE_URL, PORT } = require('./config');
+let passportLocalMongoose = require("passport-local-mongoose");
 
 let app = express();
 let jsonParser = bodyParser.json();
@@ -103,18 +104,18 @@ app.post( "/api/postuser", jsonParser, ( req, res, next ) => {
 	let country = req.body.country;
 	let business = req.body.business;
 	let lldate = req.body.lldate;
-    var level = 0;
-    let Solution = req.body.Solution;
-   
+    var level = 1;
+   // let SolutionOne = req.body.SolutionOne;
+   console.log(country);
 	//var Solution = {};
     let newUser = {
-        username,
+        username: username,
         password: password,
         level,
         lldate,
         country,
         business,
-        Solution
+        //SolutionOne
     };
 	var i;
 			for(i in usersaux)
@@ -126,47 +127,34 @@ app.post( "/api/postuser", jsonParser, ( req, res, next ) => {
                     });
 				
     }
+	console.log(newUser);
+	//console.log(country);
     let hashpass = bcrypt.hash(password, 10, (err, hash) => {
-
-        if (err) return err;
+		if (err) return err;
         User.create({
             username,
-            password: hash,
-            level,
-            lldate,
-            country,
-            business,
-            Solution
+			password: hash,
+			level,
+			lldate,
+			country,
+			business,
+			
 
 
         })
-            .then(user => {
+       .then(user => {
                 return res.status(200).json(user);
+				console.log("postuser");
+	
             })
             .catch(error => {
                 throw Error(error);
             });
 
 
-    });//encrypt
-   
-	/*UserList.post(newUser)
-		.then( user => {
-			
-			return res.status( 201 ).json({
-				message : "User added to the list",
-				status : 201,
-				user : user
-			});
-		})
-		.catch( error => {
-			res.statusMessage = "Something went wrong with the DB. Try again later.";
-            return res.status(500).json({
-                status: 500,
-                message: "Something went wrong with the DB. Try again later."
-            });
-		});
-	*/
+    });
+	
+	
 
 });
 
@@ -240,11 +228,11 @@ app.get('/api/logout', (req, res, next) => {
 });
 app.put( "/api/updateUser",jsonParser, ( req, res, next ) =>{
 	//let username = req.params.username;
-	let usernamebdy = req.body.username;
+	let username = req.body.username;
     let password = req.body.password;
 	let country = req.body.country;
 	let business = req.body.business;
-    var element = { username: usernamebdy, password: password, country: country, business: business};
+    var element = { username: username, password: password, country: country, business: business};
 	
 	UserList.put(username, element )
 		.then( user => {
@@ -489,7 +477,7 @@ app.get( "/api/getSolutionAuthor", ( req, res, next ) =>{
 
 app.get( "/api/findOneSolution",( req, res, next ) =>{
 		let id = req.query.id;
-	
+	console.log(id);
 	Solution.findOne({_id : id})
 		.then( solution => {
 			return res.status( 200 ).json( solution );

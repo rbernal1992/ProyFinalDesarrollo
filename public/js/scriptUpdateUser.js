@@ -14,8 +14,8 @@ function init() {
         },
         success: function (responseJson) {
             $('#checkuserlist').append(`<div>user is ` + responseJson + `</div>`);
-            //console.log(responseJson);
-            usuario = responseJson.username;
+            console.log(responseJson);
+            usuario = responseJson[0].username;
             if (usuario == "none") {
                 $("#nModify").css("visibility", "hidden");
                 $("#nNew").css("visibility", "hidden");
@@ -25,19 +25,20 @@ function init() {
                 $("#nNew").css("visibility", "visible");
             }
             datos = responseJson;
-            $("#user").val(datos.username);
+            $("#user").val(datos[0].username);
             $("#user").prop("disabled", true);
-            $("#country").val(datos.country);
-            $("#business").val(datos.business);
-            idFav = datos.id;
-            if (datos.SolutionOne) {
+            $("#country").val(datos[0].country);
+            $("#business").val(datos[0].business);
+            
+            if (datos[0].SolutionOne) {
+				idFav = datos[0].SolutionOne;
                 $.ajax({
-                    url : "/api/findOneSolution" + idFav,
+                    url : "/api/findOneSolution?id=" + idFav,
                     method : "GET",
                     dataType : "json",
                     contentType: "application/json",
                     success : function(responseJson) {
-                        $("#fav").apend(`<li>
+                        $("#fav").append(`<li>
                                             <div>Titulo: `+responseJson.title+`</div>
                                             <div>Autor: `+responseJson.author+`</div>
                                             <div>Descripción: `+responseJson.description+`</div>
@@ -47,18 +48,19 @@ function init() {
                     },
                     error : function(error) {
                         console.log(error);
-                        $("#fav").apend(`<li>Solución no existente</li>`);
+                        $("#fav").append(`<li>Solución no existente</li>`);
                     }
                 })
             }
-            if (datos.SolutionTwo) {
+            if (datos[0].SolutionTwo) {
+				idFav = datos[0].SolutionTwo;
                 $.ajax({
-                    url : "/api/findOneSolution" + idFav,
+                    url : "/api/findOneSolution?id=" + idFav,
                     method : "GET",
                     dataType : "json",
                     contentType: "application/json",
                     success : function(responseJson) {
-                        $("#fav").apend(`<li>
+                        $("#fav").append(`<li>
                                             <div>Titulo: `+responseJson.title+`</div>
                                             <div>Autor: `+responseJson.author+`</div>
                                             <div>Descripción: `+responseJson.description+`</div>
@@ -68,18 +70,19 @@ function init() {
                     },
                     error : function(error) {
                         console.log(error);
-                        $("#fav").apend(`<li>Solución no existente</li>`);
+                        $("#fav").append(`<li>Solución no existente</li>`);
                     }
                 })
             }
-            if (datos.SolutionThree) {
+            if (datos[0].SolutionThree) {
+				idFav = datos[0].SolutionThree;
                 $.ajax({
-                    url : "/api/findOneSolution" + idFav,
+                    url : "/api/findOneSolution?id=" + idFav,
                     method : "GET",
                     dataType : "json",
                     contentType: "application/json",
                     success : function(responseJson) {
-                        $("#fav").apend(`<li>
+                        $("#fav").append(`<li>
                                             <div>Titulo: `+responseJson.title+`</div>
                                             <div>Autor: `+responseJson.author+`</div>
                                             <div>Descripción: `+responseJson.description+`</div>
@@ -89,7 +92,7 @@ function init() {
                     },
                     error : function(error) {
                         console.log(error);
-                        $("#fav").apend(`<li>Solución no existente</li>`);
+                        $("#fav").append(`<li>Solución no existente</li>`);
                     }
                 })
             }
@@ -127,18 +130,15 @@ function init() {
         event.preventDefault();
         let d = Date.now();
         let dnow = d.toString();
-
-        if ($("#pswd").val() != $("#repPswd").val()) {
+		let pais = $("#country").find(":selected").text();
+        if ($("#pswd").val() == $("#repPswd").val()) {
             $.ajax({
-                url: "/api/",
+                url: "/api/updateUser",
                 data: JSON.stringify({
                     "username": $("#user").val(),
-                    "passwd": $("#pswd").val(),
-                    "level": "",
-                    "lastlogindate": dnow,
-                    "country": $("#coutnry").val(),
-                    "business": $("#business").val(),
-                    "Solution": {}
+                    "password": $("#pswd").val(),
+                    "country": pais,
+                    "business": $("#business").val()
                 }),
                 method: "PUT",
                 dataType: "json",
