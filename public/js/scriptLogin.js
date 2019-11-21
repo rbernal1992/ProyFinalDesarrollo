@@ -1,3 +1,5 @@
+var usuario;
+
 function init() {
     $('#submt').on("click", function (event) {
         event.preventDefault();
@@ -28,8 +30,6 @@ function init() {
     });
 
     //check user logged in
-    $('#checkuser').on("click", function (event) {
-        event.preventDefault();
         $.ajax({
             url: "/api/checksession",
             method: "GET",
@@ -41,7 +41,13 @@ function init() {
             success: function (responseJson) {
                 $('#checkuserlist').append(`<div>user is ` + responseJson + `</div>`);
                 //console.log(responseJson);
-
+                usuario = responseJson;
+                if (usuario == "none") {
+                    $("#nModify").css("visibility", "hidden");
+                }
+                else {
+                    $("#nModify").css("visibility", "visible");
+                }
             },
 
             error: function (err) {
@@ -50,7 +56,6 @@ function init() {
 
             }
         });
-    });
     //logout
     $('#logout').on("click", function (event) {
         event.preventDefault();

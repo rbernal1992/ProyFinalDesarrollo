@@ -85,6 +85,7 @@ h2 {
 footer {
     display: flex;
     justify-content: space-evenly;
+    visibility: hidden;
 }
 
 /* Slideshow container */

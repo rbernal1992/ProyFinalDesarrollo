@@ -1,14 +1,4 @@
-//ejemplo de formato de imagen data = [0,255,8,30,....muchos numeros más]
-var contador = 0;
 var usuario;
-
-File.prototype.convertToBase64 = function(callback){
-    var reader = new FileReader();
-    reader.onloadend = function (e) {
-        callback(e.target.result, e.target.error);
-    };   
-    reader.readAsDataURL(this);
-};
 
 function init() {
     //check user logged in
@@ -22,6 +12,7 @@ function init() {
             },
             success: function (responseJson) {
                 $('#checkuserlist').append(`<div>user is ` + responseJson + `</div>`);
+                globalUser = responseJson;
                 //console.log(responseJson);
                 usuario = responseJson;
                 if (usuario == "none") {
@@ -38,7 +29,7 @@ function init() {
 
             }
         });
-   
+  
     //logout
     $('#logout').on("click", function (event) {
         event.preventDefault();
@@ -53,49 +44,15 @@ function init() {
             success: function (responseJson) {
                 $('#logoutdiv').append(`<div>user is` + responseJson + ` logout</div>`);
                 //console.log(responseJson);
-
             },
 
             error: function (err) {
                 $('#checkuserlist').append(err);
-
-
             }
         });
     });
 
-    $("#register").on("submit", function (event) {
-        event.preventDefault();
-        let d = Date.now();
-        let dnow = d.toString();
-        
-        if ($("#pswd").val() != $("#repPswd").val()) {
-            $.ajax({
-                url: "/api/",
-                data: JSON.stringify({
-                    "username": $("#user").val(),
-                    "passwd": $("#pswd").val(),
-                    "level" : "",
-                    "lastlogindate" : dnow,
-                    "country": $("#coutnry").val(),
-                    "business" : $("#business").val(),
-                    "Solution" : {}
-                }),
-                method : "POST",
-                dataType : "json",
-                contentType : "application/json",
-                success : function(responseJson) {
-                    alert("Usuario registrado");
-                },
-                error : function(error) {
-                    console.log(error);
-                }
-            })
-        }
-        else {
-            alert("Asegurese que la contraseña sea correcta")
-        }
-    });
+    
 }
 
 init();

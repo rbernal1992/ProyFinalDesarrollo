@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>Inicio de sesion</title>
+  <title>Siasa</title>
   <link href="./css/styles.css" rel="stylesheet" type="text/css" />
 </head>
 
@@ -26,17 +26,38 @@
       </ul>
     </div>
 
-    <div>
-      <form id="login">
-        <fieldset>
-          <legend>Inserte sus credenciales para iniciar sesión</legend>
-          <label for="username">Usuario: </label>
-          <input type="text" name="user" id="username"><br><br>
-          <label for="password">Contraseña: </label>
-          <input type="password" name="pass" id="password">
-          <input type="submit" value="Login">
-        </fieldset>
-      </form>
+    <div class="slideshow-container">
+
+      <!-- Full-width images with number and caption text -->
+      <div class="mySlides fade">
+        <div class="numbertext">1 / 3</div>
+        <img id="mat" src="img/materiales.png">
+        <div class="text"></div>
+      </div>
+
+      <div class="mySlides fade">
+        <div class="numbertext">2 / 3</div>
+        <img id="tal" src="img/taladro.png">
+        <div class="text"></div>
+      </div>
+
+      <div class="mySlides fade">
+        <div class="numbertext">3 / 3</div>
+        <img id="tue" src="img/tuercas.png">
+        <div class="text"></div>
+      </div>
+
+      <!-- Next and previous buttons -->
+      <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+      <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+    <br>
+
+    <!-- The dots/circles -->
+    <div style="text-align:center">
+      <span class="dot" onclick="currentSlide(1)"></span>
+      <span class="dot" onclick="currentSlide(2)"></span>
+      <span class="dot" onclick="currentSlide(3)"></span>
     </div>
 
   </main>
@@ -48,7 +69,7 @@
   </footer>
   <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
     crossorigin="anonymous"></script>
-  <script src="./js/scriptLogin.js"></script>
+  <script src="./js/scriptHome.js"></script>
 
 </body>
 

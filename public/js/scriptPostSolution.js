@@ -1,17 +1,28 @@
 //ejemplo de formato de imagen data = [0,255,8,30,....muchos numeros más]
 var contador = 0;
+var bufferurl = [];
+var usuario;
 File.prototype.convertToBase64 = function(callback){
-    var reader = new FileReader();
-    reader.onloadend = function (e) {
-        callback(e.target.result, e.target.error);
-    };   
-    reader.readAsDataURL(this);
-};
+                var reader = new FileReader();
+                reader.onloadend = function (e) {
+                    callback(e.target.result, e.target.error);
+                };   
+                reader.readAsDataURL(this);
+        };
+
+function loadSprite(src, ctx ,callback){
+	//var Sprite = new Image();
+	console.log(ctx);
+	var img = new Image();
+	img.src = src;
+	img.onload = function() {
+    ctx.drawImage(img, 33, 71, 500, 300);
+	};
+	
+}	
 
 function init() {
     //check user logged in
-    $('#checkuser').on("click", function (event) {
-        event.preventDefault();
         $.ajax({
             url: "/api/checksession",
             method: "GET",
@@ -23,7 +34,13 @@ function init() {
             success: function (responseJson) {
                 $('#checkuserlist').append(`<div>user is ` + responseJson + `</div>`);
                 //console.log(responseJson);
-
+                usuario = responseJson;
+                if (usuario == "none") {
+                    $("#nModify").css("visibility", "hidden");
+                }
+                else {
+                    $("#nModify").css("visibility", "visible");
+                }
             },
 
             error: function (err) {
@@ -32,7 +49,7 @@ function init() {
 
             }
         });
-    });
+
     //logout
     $('#logout').on("click", function (event) {
         event.preventDefault();
@@ -94,7 +111,6 @@ function init() {
             })
         });
     });
-
 }
 
 init();

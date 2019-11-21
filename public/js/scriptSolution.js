@@ -1,5 +1,9 @@
 //ejemplo de formato de imagen data = [0,255,8,30,....muchos numeros más]
 var contador = 0;
+var globalUser;
+var allPosts;
+let page = 0;
+var usuario;
 File.prototype.convertToBase64 = function(callback){
     var reader = new FileReader();
     reader.onloadend = function (e) {
@@ -10,8 +14,6 @@ File.prototype.convertToBase64 = function(callback){
 
 function init() {
     //check user logged in
-    $('#checkuser').on("click", function (event) {
-        event.preventDefault();
         $.ajax({
             url: "/api/checksession",
             method: "GET",
@@ -22,8 +24,15 @@ function init() {
             },
             success: function (responseJson) {
                 $('#checkuserlist').append(`<div>user is ` + responseJson + `</div>`);
+                globalUser = responseJson;
                 //console.log(responseJson);
-
+                usuario = responseJson;
+                if (usuario == "none") {
+                    $("#nModify").css("visibility", "hidden");
+                }
+                else {
+                    $("#nModify").css("visibility", "visible");
+                }
             },
 
             error: function (err) {
@@ -32,7 +41,7 @@ function init() {
 
             }
         });
-    });
+    
     //logout
     $('#logout').on("click", function (event) {
         event.preventDefault();
@@ -68,17 +77,21 @@ function init() {
         },
         contentType: "application/json",
         success: function (responseJson) {
+            allPosts = responseJson;
             var Iditem;
             var ItemPrev;
             var ctx = [];
+            var i;
             
-            for (check in responseJson){
-            $('#listasoluciones').append(`<li><div> title: ` + responseJson[check].title + `</div>
-                                            <div> author:` + responseJson[check].author + `</div>
-                                            <div> description:` + responseJson[check].description + `</div>
-                                            <div> review:` + responseJson[check].grade + `</div>
-                                            <div> grade:` + responseJson[check].gradenum + `</div>
+            for (i = page*5; i < i+5; i++){
+            $('#listasoluciones').append(`<li><div> title: ` + allPosts[i].title + `</div>
+                                            <div class="id`+i+`" style="visibility: hidden">`+allPosts[i]._id+`</div> 
+                                            <div> author:` + allPosts[i].author + `</div>
+                                            <div> description:` + allPosts[i].description + `</div>
+                                            <div> review:` + allPosts[i].grade + `</div>
+                                            <div> grade:` + allPosts[i].gradenum + `</div>
                                             <div> last user who accessed:` + responseJson.lastuseraccess + `</div>
+                                            <div> Favorito: <button class="favorito">Favorito</button>
                                             <canvas id="ItemPrev`+contador+`"> </canvas>
                                            </li>`);
             
@@ -110,6 +123,35 @@ function init() {
         },
             async: false
     });
+
+    // Favorito
+    $("#solutions").on("click", ".favorito", function(event) {
+        event.preventDefault();
+        let favID = $("#favID"+this.id).text();
+
+        $.ajax({
+            url : "/api/addUserFav/" + globalUser,
+            data : JSON.stringify({
+                "nId" : favID
+            }),
+            method : "PUT",
+            dataType : "json",
+            contentType : "application/json",
+            success : function(responseJson) {
+                alert("Post añadido a favoritos");
+            },
+            error : function(error) {
+                console.log(error);
+            }
+        });
+    });
+
+    if (page == 0) {
+        $("#prev").css("visibility", "hidden");
+    }
+    else {
+        $("#prev").css("visibility", "visible");
+    }
 }
 
 init();
