@@ -92,8 +92,8 @@ function init() {
                         "description": $("#additemcontent").val(),
                         "author": $("#additemauthor").val(),
                         "datecreated" : dnow,
-                        "grade" : $("#additemcomment").val(),
-                        "gradenum" : 10,
+                        "grade" : 10,
+                        "gradenum" : 1,
                         "counteraccess" : 0,
                         "lastuseraccess" : "",
                         "imageOne" : base64

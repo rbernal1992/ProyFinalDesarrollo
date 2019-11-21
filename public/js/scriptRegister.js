@@ -86,6 +86,10 @@ function init() {
                 contentType : "application/json",
                 success : function(responseJson) {
                     alert("Usuario registrado");
+                    $("#user").val("")
+                    $("#pswd").val("")
+                    $("#coutnry").val("")
+                    $("#business").val("")
                 },
                 error : function(error) {
                     console.log(error);
