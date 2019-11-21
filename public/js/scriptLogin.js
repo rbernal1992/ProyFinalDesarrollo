@@ -18,7 +18,9 @@ function init() {
             success: function (responseJson) {
                 $('#status').append(`<div>` + responseJson.username + `logged in</div>`);
                 console.log(responseJson);
-
+                alert("Inicio de sesión exitosos");
+                $("#username").val("");
+                $("#password").val("");
             },
 
             error: function (err) {
@@ -44,9 +46,11 @@ function init() {
                 usuario = responseJson;
                 if (usuario == "none") {
                     $("#nModify").css("visibility", "hidden");
+                    $("#nNew").css("visibility", "hidden");
                 }
                 else {
                     $("#nModify").css("visibility", "visible");
+                    $("#nNew").css("visibility", "visible");
                 }
             },
 

@@ -23,12 +23,14 @@ function init() {
             success: function (responseJson) {
                 $('#checkuserlist').append(`<div>user is ` + responseJson + `</div>`);
                 //console.log(responseJson);
-                usuario = responseJson;
+                usuario = responseJson.username;
                 if (usuario == "none") {
                     $("#nModify").css("visibility", "hidden");
+                    $("#nNew").css("visibility", "hidden");
                 }
                 else {
                     $("#nModify").css("visibility", "visible");
+                    $("#nNew").css("visibility", "visible");
                 }
             },
 
@@ -86,6 +88,10 @@ function init() {
                 contentType : "application/json",
                 success : function(responseJson) {
                     alert("Usuario registrado");
+                    $("#user").val("")
+                    $("#pswd").val("")
+                    $("#coutnry").val("")
+                    $("#business").val("")
                 },
                 error : function(error) {
                     console.log(error);
